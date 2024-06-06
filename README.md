@@ -23,3 +23,5 @@ git clone https://codeberg.org/joaoh/xploit-framework && cd xploit-framework && 
 <li>BANNER GRAB</li>
 <li>GEOIP</li>
 </blockquote>
+
+<i>Re-upload from https://codeberg.org/joaoh/xploit-framework</i>
