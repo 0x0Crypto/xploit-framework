@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/chzyer/readline"
+	"github.com/fatih/color"
 )
 
 var completer = readline.NewPrefixCompleter(
@@ -21,8 +22,10 @@ var completer = readline.NewPrefixCompleter(
 var rl *readline.Instance
 
 func ConfigureInput() readline.Config {
+    white := color.New(color.FgWhite, color.Bold).SprintfFunc()
+
 	configRl := readline.Config{
-		Prompt:            "Xploit >>> ",
+		Prompt:            white("Xploit >>> "),
 		HistoryFile:       ".readline_history",
 		AutoComplete:      completer,
 		HistorySearchFold: true,

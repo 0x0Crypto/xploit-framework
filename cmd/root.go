@@ -3,10 +3,13 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"runtime"
+
 	//"log"
 	"os"
 	"strconv"
 	"strings"
+    "os/exec"
 
 	// Internal Recon Libs
 	"xploit/internal/bannergrab"
@@ -46,6 +49,7 @@ var helpOptions = []helpOption{
 var (
 	red       = color.New(color.FgRed, color.Italic).PrintlnFunc()
 	boldGreen = color.New(color.FgGreen, color.Bold).PrintlnFunc()
+    boldBlue  = color.New(color.FgBlue, color.Bold).PrintlnFunc()
 )
 
 func InteractiveShell(ctx context.Context) {
@@ -218,12 +222,29 @@ func InteractiveShell(ctx context.Context) {
 
 				portscan.Scan(ctx, targetHost, maxPort)
 			case "clear":
-				fmt.Println("\033[H")
+                if runtime.GOOS == "windows" {
+                    cmd := exec.Command("cls")
+                    out, _ := cmd.Output()
+                    fmt.Println(string(out))
+                } else {
+                    cmd := exec.Command("clear")
+                    out, _ := cmd.Output()
+                    fmt.Println(string(out))
+                }
 			case "exit":
 				color.Cyan("Bye (:")
 				os.Exit(0)
 			default:
-				color.Red("Command not found!")
+				//color.Red("Command not found!")
+                boldBlue("Executing command system...")
+                cmd := exec.Command(command, commandSplit[1:]...)
+                out, err := cmd.Output()
+                if err != nil {
+                    red("ERROR: ", err.Error())
+                    continue
+                }
+
+                fmt.Println(string(out))
 			}
 		}
 	}
