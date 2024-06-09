@@ -2,19 +2,17 @@ package dnsrecon
 
 import "net"
 
-var hosts []string
+func Dnsrecon(targets []string) (map[string][]string, error) {
+    resultados := make(map[string][]string)
 
-func Dnsrecon(targets []string) ([]string, error) {
 	for _, target := range targets {
 		addrs, err := net.LookupHost(target)
 		if err != nil {
 			return nil, err
 		}
 
-		for _, addr := range addrs {
-			hosts = append(hosts, addr)
-		}
+        resultados[target] = addrs
 	}
 
-	return hosts, nil
+	return resultados, nil
 }

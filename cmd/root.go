@@ -105,18 +105,18 @@ func InteractiveShell(ctx context.Context) {
 					continue
 				}
 
-				urls := commandSplit[1:]
-				for _, url := range urls {
-					results, err := dnsrecon.Dnsrecon(commandSplit[1:])
-					if err != nil {
-						color.Red("ERROR: " + err.Error())
-						continue
-					}
+				hosts := commandSplit[1:]
+				results, err := dnsrecon.Dnsrecon(hosts)
+				if err != nil {
+					color.Red("ERROR: " + err.Error())
+					continue
+				}
 
-					color.Blue("===\n" + url)
-					for _, result := range results {
-						color.Cyan("- \t" + result)
-					}
+				for domain, addrs := range results {
+                    fmt.Println(domain)
+                    for _, addr := range addrs {
+                        fmt.Println("-", addr)
+                    }
 				}
 			case "bannergrab":
 				if len(commandSplit) < 3 {
