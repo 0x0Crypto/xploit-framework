@@ -198,19 +198,13 @@ func InteractiveShell(ctx context.Context) {
 
 				subrecon.SubRecon(ctx, url, wordlistPath)
 			case "geoip":
-				if len(commandSplit[1:]) == 0 {
-					color.Red("Use: geoip IPADDR1 IPADDR2 .........")
+				if len(commandSplit) < 2 {
+					color.Red("Use: geoip HOSTNAME")
 					continue
 				}
 
-				addrs := commandSplit[1:]
-				results, err := geoip.Locate(addrs)
-				if err != nil {
-					color.Red("ERROR: " + err.Error())
-					continue
-				}
-
-				boldGreen(results)
+				addr := commandSplit[1]
+				geoip.Locate(addr)
 			case "portscan":
 				if len(commandSplit) < 3 {
 					color.Red("Invalid format. Use: portscan HOST MAX_PORT (EX: 1024)")
