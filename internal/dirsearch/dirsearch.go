@@ -14,6 +14,7 @@ import (
 func DirSearch(ctx context.Context, target, wordlistPath string) {
 	file, err := os.Open(wordlistPath)
 	if err != nil {
+
 		color.Red("ERROR: " + err.Error())
 	}
 	defer file.Close()

@@ -4,22 +4,21 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"syscall"
 	"xploit/cmd"
+    "syscall"
 )
 
 func main() {
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+    sigChan := make(chan os.Signal, 1)
+    signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
-	for {
-		ctx, cancel := context.WithCancel(context.Background())
+    for {
+        ctx, cancel := context.WithCancel(context.Background())
+        go func() {
+            <-sigChan
+            cancel()
+        }()
 
-		go func() {
-			<-sigChan
-			cancel()
-		}()
-
-		cmd.InteractiveShell(ctx)
-	}
+        cmd.InteractiveShell(ctx)
+    }
 }

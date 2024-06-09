@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"log"
+	//"log"
 	"os"
 	"strconv"
 	"strings"
@@ -18,7 +18,6 @@ import (
 	"xploit/internal/subrecon"
 
 	// External
-
 	"github.com/chzyer/readline"
 	"github.com/fatih/color"
 	"github.com/likexian/whois"
@@ -29,6 +28,20 @@ type helpOption struct {
 	Description string
 }
 
+var helpOptions = []helpOption{
+	{"dnsrecon", "DNS Recognition"},
+	{"bannergrab", "Host Banner Grab"},
+	{"subrecon", "Subdomain scan"},
+	{"dirsearch", "Directory scan"},
+	{"whois", "Whois scan"},
+	{"robots", "Detect robots.txt"},
+	{"geoip", "Geolocate IP Address"},
+	{"portscan", "Scan open ports from target host"},
+	{"banner", "Show the Xploit banner"},
+	{"clear", "Clear screen"},
+	{"exit", "Exit from Xploit"},
+}
+
 // colors
 var (
 	red       = color.New(color.FgRed, color.Italic).PrintlnFunc()
@@ -36,41 +49,34 @@ var (
 )
 
 func InteractiveShell(ctx context.Context) {
-	helpOptions := []helpOption{
-		{"dnsrecon", "DNS Recognition"},
-		{"bannergrab", "Host Banner Grab"},
-		{"subrecon", "Subdomain scan"},
-		{"dirsearch", "Directory scan"},
-		{"whois", "Whois scan"},
-		{"robots", "Detect robots.txt"},
-		{"geoip", "Geolocate IP Address"},
-		{"portscan", "Scan open ports from target host"},
-		{"banner", "Show the Xploit banner"},
-		{"clear", "Clear screen"},
-		{"exit", "Exit from Xploit"},
-	}
+	configRl := ConfigureInput()
 
 	ShowAscii()
 
-	rl, err := readline.New("Xploit >>> ")
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	defer rl.Close()
-
 	for {
+        rl, err := readline.NewEx(&configRl)
+    	if err != nil {
+		    fmt.Println(err.Error())
+            return
+		}
+
 		select {
 		case <-ctx.Done():
-			return
+            return
 		default:
 			line, err := rl.Readline()
 			if err != nil {
-				log.Fatal(err.Error())
+                if strings.Contains(err.Error(), "Interrupt") {
+                    fmt.Println("Type 'exit' to close.")
+                } else {
+                    fmt.Println(err.Error())
+                }
+                continue
 			}
 
 			commandLine := line
-
 			commandLine = strings.TrimSpace(commandLine)
+
 			if commandLine == "" {
 				continue
 			}

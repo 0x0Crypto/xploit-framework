@@ -3,33 +3,29 @@ package portscan
 import (
 	"context"
 	"fmt"
+	"github.com/fatih/color"
+	"net"
 	"strconv"
 	"time"
-
-	portscanner "github.com/anvie/port-scanner"
-	"github.com/fatih/color"
 )
 
 func Scan(ctx context.Context, targetHost string, maxPort int) {
-	select {
-	case <-ctx.Done():
-		fmt.Println("Portscan cancelled")
-		return
-	default:
-		cyan := color.New(color.FgCyan, color.Bold).PrintfFunc()
+    portStr := strconv.Itoa(maxPort)
 
-		color.Blue("Scanning: " + targetHost + " range " + string(strconv.Itoa(maxPort)) + "...")
+	color.Blue("Scanning: " + targetHost + " range " + portStr + "...")
 
-		ps := portscanner.NewPortScanner(targetHost, 1*time.Second, 15)
-		openedPorts := ps.GetOpenedPort(0, maxPort)
+	for i := 0; i <= maxPort; i++ {
+		select {
+		case <-ctx.Done():
+                fmt.Println("PortScan canceled")
+                return
+		default:
+			ip := targetHost + ":" + strconv.Itoa(i)
 
-		for _, port := range openedPorts {
-			select {
-			case <-ctx.Done():
-				fmt.Println("Portscan cancelled")
-				return
-			default:
-				cyan("%d [open] %s\n", port, ps.DescribePort(port))
+			conn, err := net.DialTimeout("tcp", ip, time.Duration(300)*time.Millisecond)
+			if err == nil {
+				defer conn.Close()
+				color.Cyan("OPEN %v tcp\n", i)
 			}
 		}
 	}
