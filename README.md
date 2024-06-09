@@ -24,4 +24,12 @@ git clone https://codeberg.org/joaoh/xploit-framework && cd xploit-framework && 
 <li>GEOIP</li>
 </blockquote>
 
+<p>In the future:</p>
+<blockquote>
+<li>Cloudflare bypass</li>
+<li>Stealth portscan</li>
+<li>URL Checker</li>
+<li>Reverse Shell generator</li>
+</blockquote>
+
 <i>Re-upload from https://codeberg.org/joaoh/xploit-framework</i>
