@@ -4,7 +4,7 @@
 
 <b>Installation:</b>
 ```
-git clone https://codeberg.org/joaoh/xploit-framework && cd xploit-framework && go build -ldflags="-s -w"
+git clone https://github.com/0x0Crypto/xploit-framework && cd xploit-framework && go build -ldflags="-s -w"
 ```
 
 <b>Run:</b>
