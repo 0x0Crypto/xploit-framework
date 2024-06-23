@@ -19,10 +19,8 @@ var completer = readline.NewPrefixCompleter(
 	readline.PcItem("exit"),
 )
 
-var rl *readline.Instance
-
 func ConfigureInput() readline.Config {
-    white := color.New(color.FgWhite, color.Bold).SprintfFunc()
+	white := color.New(color.FgWhite, color.Bold).SprintfFunc()
 
 	configRl := readline.Config{
 		Prompt:            white("Xploit >>> "),

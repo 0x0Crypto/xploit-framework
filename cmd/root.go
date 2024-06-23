@@ -3,13 +3,11 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"runtime"
-
-	//"log"
 	"os"
+	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
-    "os/exec"
 
 	// Internal Recon Libs
 	"xploit/internal/bannergrab"
@@ -21,6 +19,7 @@ import (
 	"xploit/internal/subrecon"
 
 	// External
+
 	"github.com/chzyer/readline"
 	"github.com/fatih/color"
 	"github.com/likexian/whois"
@@ -47,9 +46,8 @@ var helpOptions = []helpOption{
 
 // colors
 var (
-	red       = color.New(color.FgRed, color.Italic).PrintlnFunc()
-	boldGreen = color.New(color.FgGreen, color.Bold).PrintlnFunc()
-    boldBlue  = color.New(color.FgBlue, color.Bold).PrintlnFunc()
+	red      = color.New(color.FgRed, color.Italic).PrintlnFunc()
+	boldBlue = color.New(color.FgBlue, color.Bold).PrintlnFunc()
 )
 
 func InteractiveShell(ctx context.Context) {
@@ -58,24 +56,24 @@ func InteractiveShell(ctx context.Context) {
 	ShowAscii()
 
 	for {
-        rl, err := readline.NewEx(&configRl)
-    	if err != nil {
-		    fmt.Println(err.Error())
-            return
+		rl, err := readline.NewEx(&configRl)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
 		}
 
 		select {
 		case <-ctx.Done():
-            return
+			return
 		default:
 			line, err := rl.Readline()
 			if err != nil {
-                if strings.Contains(err.Error(), "Interrupt") {
-                    fmt.Println("Type 'exit' to close.")
-                } else {
-                    fmt.Println(err.Error())
-                }
-                continue
+				if strings.Contains(err.Error(), "Interrupt") {
+					fmt.Println("Type 'exit' to close.")
+				} else {
+					fmt.Println(err.Error())
+				}
+				continue
 			}
 
 			commandLine := line
@@ -113,10 +111,10 @@ func InteractiveShell(ctx context.Context) {
 				}
 
 				for domain, addrs := range results {
-                    fmt.Println(domain)
-                    for _, addr := range addrs {
-                        fmt.Println("-", addr)
-                    }
+					fmt.Println(domain)
+					for _, addr := range addrs {
+						fmt.Println("-", addr)
+					}
 				}
 			case "bannergrab":
 				if len(commandSplit) < 3 {
@@ -216,29 +214,28 @@ func InteractiveShell(ctx context.Context) {
 
 				portscan.Scan(ctx, targetHost, maxPort)
 			case "clear":
-                if runtime.GOOS == "windows" {
-                    cmd := exec.Command("cls")
-                    out, _ := cmd.Output()
-                    fmt.Println(string(out))
-                } else {
-                    cmd := exec.Command("clear")
-                    out, _ := cmd.Output()
-                    fmt.Println(string(out))
-                }
+				if runtime.GOOS == "windows" {
+					cmd := exec.Command("cls")
+					out, _ := cmd.Output()
+					fmt.Println(string(out))
+				} else {
+					cmd := exec.Command("clear")
+					out, _ := cmd.Output()
+					fmt.Println(string(out))
+				}
 			case "exit":
 				color.Cyan("Bye (:")
 				os.Exit(0)
 			default:
-				//color.Red("Command not found!")
-                boldBlue("Executing command system...")
-                cmd := exec.Command(command, commandSplit[1:]...)
-                out, err := cmd.Output()
-                if err != nil {
-                    red("ERROR: ", err.Error())
-                    continue
-                }
+				boldBlue("Executing command system...")
+				cmd := exec.Command(command, commandSplit[1:]...)
+				out, err := cmd.Output()
+				if err != nil {
+					red("ERROR: ", err.Error())
+					continue
+				}
 
-                fmt.Println(string(out))
+				fmt.Println(string(out))
 			}
 		}
 	}
